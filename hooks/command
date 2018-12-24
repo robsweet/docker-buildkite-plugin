@@ -2,6 +2,16 @@
 
 set -euo pipefail
 
+fix_docker_in_docker_pwd() {
+  ORIG_PWD=$PWD
+  REAL_PWD=$(docker inspect --format='{{ range .Mounts }}{{ if eq .Destination "/buildkite/builds" }}{{ .Source }}{{ end }}{{ end }}' $(docker ps | grep $HOSTNAME | awk '{ print $1}') | grep builds)
+  PWD=$(echo $REAL_PWD | sed -e "s|/builds|$PWD|")
+}
+
+if [ -f /.dockerenv ]; then
+  fix_docker_in_docker_pwd
+fi
+
 # Reads a list from plugin config into a global result array
 # Returns success if values were read
 plugin_read_list_into_result() {
