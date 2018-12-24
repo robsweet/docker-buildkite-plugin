@@ -2,13 +2,10 @@
 
 set -euo pipefail
 
-fix_docker_in_docker_pwd() {
-  ORIG_PWD=$PWD
-  echo Original PWD is \"$ORIG_PWD\"
+find_docker_in_docker_pwd() {
+  ORIG_PWD=$(echo $PWD | sed -e 's|/buildkite/builds||')
   REAL_PWD=$(docker inspect --format='{{ range .Mounts }}{{ if eq .Destination "/buildkite/builds" }}{{ .Source }}{{ end }}{{ end }}' $(docker ps | grep $HOSTNAME | awk '{ print $1}') | grep builds)
-  echo Real PWD is \"$REAL_PWD\"
-  PWD=$(echo $REAL_PWD | sed -e "s|/builds|$PWD|")
-  echo New PWD is \"$PWD\"
+  PWD="${REAL_PWD}${ORIG_PWD}"
 }
 
 # if [ -f /.dockerenv ]; then
