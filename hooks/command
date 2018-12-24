@@ -11,9 +11,9 @@ fix_docker_in_docker_pwd() {
   echo New PWD is \"$PWD\" >&2
 }
 
-if [ -f /.dockerenv ]; then
+# if [ -f /.dockerenv ]; then
   fix_docker_in_docker_pwd
-fi
+# fi
 
 # Reads a list from plugin config into a global result array
 # Returns success if values were read
